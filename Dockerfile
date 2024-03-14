@@ -2,13 +2,10 @@ FROM golang:1.22-alpine3.19
 
 WORKDIR /app
 
-COPY go.mod go.sum ./
-RUN go mod download
+COPY . /app
 
-COPY *.go ./
-
-RUN go build
+RUN go build -o main .
 
 EXPOSE 8080
 
-CMD ["/app/redir"]
+CMD ["./main"]

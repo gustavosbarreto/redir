@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -9,6 +10,8 @@ import (
 )
 
 func main() {
+	fmt.Println("Starting...")
+
 	http.HandleFunc("/", redirHandler)
 	http.ListenAndServe(":8080", nil)
 }
