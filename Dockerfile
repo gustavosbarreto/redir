@@ -7,8 +7,8 @@ RUN go mod download
 
 COPY *.go ./
 
-RUN go build -o /app
+RUN go build
 
 EXPOSE 8080
 
-CMD ["/app"]
+CMD ["/app/redir"]
