@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	"github.com/PaesslerAG/jsonpath"
@@ -25,7 +25,6 @@ func redirHandler(w http.ResponseWriter, r *http.Request) {
 	queryURL := r.URL.Query().Get("url")
 	queryPath := r.URL.Query().Get("query")
 
-	// Realizar a chamada GET para a URL fornecida
 	resp, err := http.Get(queryURL)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -33,14 +32,12 @@ func redirHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer resp.Body.Close()
 
-	// Ler o corpo da resposta
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	// Decodificar o corpo da resposta JSON
 	var data interface{}
 	err = json.Unmarshal(body, &data)
 	if err != nil {
@@ -48,20 +45,17 @@ func redirHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Aplicar o JSONPath para extrair a URL de download
 	result, err := jsonpath.Get(queryPath, data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	// Verificar se o resultado é uma string
 	downloadURL, ok := result.(string)
 	if !ok {
 		http.Error(w, "Result is not a string", http.StatusInternalServerError)
 		return
 	}
 
-	// Redirecionar o usuário para a URL de download
 	http.Redirect(w, r, downloadURL, http.StatusFound)
 }
