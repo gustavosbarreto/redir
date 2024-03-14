@@ -13,7 +13,12 @@ func main() {
 	fmt.Println("Starting...")
 
 	http.HandleFunc("/", redirHandler)
+	http.HandleFunc("/health", healthHandler)
 	http.ListenAndServe(":8080", nil)
+}
+
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
 }
 
 func redirHandler(w http.ResponseWriter, r *http.Request) {
